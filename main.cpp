@@ -26,5 +26,4 @@ int main(void){
 	RLOGGER_DEBUG("Hello %s, this is %f", "World", 100.0f);
 
 	rLogger_quit();
-	return 0;
 }

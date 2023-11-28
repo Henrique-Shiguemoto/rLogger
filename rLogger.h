@@ -6,15 +6,16 @@
 #ifndef RLOGGER_H
 #define RLOGGER_H
 
-#define LOG_FILE_NAME 			"rLog.txt"
+#define LOG_FILE_NAME 			"rLog.log"
 #define OUTPUT_BUFFER_SIZE 		16384
 
 static int _rlog_initialized = 0;
 
 typedef enum rLogger_mode {
-	RLOG_TERMINAL_MODE 		= 1,
-	RLOG_FILE_MODE 			= 2,
-	RLOG_TERMINAL_AND_FILE_MODE = 3,
+	RLOG_TERMINAL_MODE = 0,
+	RLOG_FILE_MODE,
+	RLOG_TERMINAL_AND_FILE_MODE,
+	RLOG_MODE_COUNT
 } rLogger_mode;
 
 typedef enum rLog_level {
@@ -64,7 +65,7 @@ int rLogger_init(rLogger_mode mode){
 		case RLOG_TERMINAL_MODE:
 		{
 			current_rLogger_mode = RLOG_TERMINAL_MODE;
-			printf("[INFO]: Succesfully initialized for terminal logging.\n");
+			RLOGGER_INFO("%s", "Succesfully initialized for terminal logging.");
 			break;
 		} 
 		case RLOG_FILE_MODE: 
@@ -72,10 +73,10 @@ int rLogger_init(rLogger_mode mode){
 			current_rLogger_mode = RLOG_FILE_MODE;
 			log_file_handle = fopen(LOG_FILE_NAME, "w+");
 			if(!log_file_handle){
-				printf("[WARNING]: Could'n open log file.\n");
+				RLOGGER_WARN("%s", "Could'nt open log file.");
 				result = 1;
 			}
-			printf("[INFO]: Succesfully initialized for file logging.\n");
+			RLOGGER_INFO("%s", "Succesfully initialized for file logging.");
 			break;
 		}
 		case RLOG_TERMINAL_AND_FILE_MODE:
@@ -83,14 +84,16 @@ int rLogger_init(rLogger_mode mode){
 			current_rLogger_mode = RLOG_TERMINAL_AND_FILE_MODE;
 			log_file_handle = fopen(LOG_FILE_NAME, "w+");
 			if(!log_file_handle){
-				printf("[WARNING]: Could'n open log file.\n");
+				RLOGGER_WARN("%s", "Could'nt open log file.");
 				result = 1;
 			}
-			printf("[INFO]: Succesfully initialized for text and file logging.\n");
+			RLOGGER_INFO("%s", "Succesfully initialized for text and file logging.");
 			break;
 		}
 		default: 
 		{
+			current_rLogger_mode = RLOG_TERMINAL_MODE;
+			RLOGGER_WARN("%s", "Unknown logging mode, defaulting to terminal logging mode.");
 			result = 1;
 			break;
 		}
@@ -99,7 +102,7 @@ int rLogger_init(rLogger_mode mode){
 }
 
 void rLogger_set_mode(rLogger_mode mode){
-	if(mode >= RLOG_TERMINAL_MODE && mode <= RLOG_TERMINAL_AND_FILE_MODE){
+	if(mode >= RLOG_TERMINAL_MODE && mode <= RLOG_MODE_COUNT){
 		current_rLogger_mode = mode;
 	}else{
 		current_rLogger_mode = RLOG_TERMINAL_MODE;
@@ -117,18 +120,21 @@ void rLogger_message(rLog_level level, const char* format, ...){
 	vsnprintf(output_buffer, OUTPUT_BUFFER_SIZE, format, args);
 	va_end(args);
 
-	char output_buffer_aux[OUTPUT_BUFFER_SIZE];
-	snprintf(output_buffer_aux, OUTPUT_BUFFER_SIZE, "%s%s\n", message_prefixes[level], output_buffer);
+	// we're adding 10 here because that's the most amount of bytes we'll need to add a prefix
+	// this makes sure that the output of snprintf isn't truncated.
+	char output_buffer_aux[OUTPUT_BUFFER_SIZE + 10];
+	snprintf(output_buffer_aux, OUTPUT_BUFFER_SIZE + 10, "%s%s\n", message_prefixes[level], output_buffer);
 
-	if((current_rLogger_mode & RLOG_TERMINAL_MODE) != 0) 
+	//this is verifying if the we either need to print to the terminal or write to a file or both
+	if(((current_rLogger_mode + 1) & (RLOG_TERMINAL_MODE + 1)) != 0) 
 		printf("%s", output_buffer_aux);
-	if((current_rLogger_mode & RLOG_FILE_MODE) != 0)
+	if(((current_rLogger_mode + 1) & (RLOG_FILE_MODE + 1)) != 0)
 	 	fwrite(output_buffer_aux, strlen(output_buffer_aux), 1, log_file_handle);
 }
 
 void rLogger_quit(void){
 	if(_rlog_initialized) {
-		printf("[INFO]: Quit from terminal logging.\n");
+		RLOGGER_INFO("%s", "Quit from terminal logging.");
 		if(log_file_handle) fclose(log_file_handle);
 	}
 }

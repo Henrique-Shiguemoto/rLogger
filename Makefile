@@ -1,6 +1,6 @@
-COMPILER=clang
-COMPILER_FLAGS=-Wall -Wextra -pedantic -std=c11 -Wno-unused-parameter
-SRC=main.c
+COMPILER=clang++
+COMPILER_FLAGS=-Wall -Wextra -pedantic -std=c++11 -Wno-unused-parameter
+SRC=main.cpp
 BIN=main.exe
 DEBUGGER=gdb
 
