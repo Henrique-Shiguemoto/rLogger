@@ -1,0 +1,5 @@
+*.o 
+*.exe 
+rLog.txt 
+rLog.log
+TODO.txt
