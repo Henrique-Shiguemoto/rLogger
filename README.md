@@ -2,6 +2,11 @@
 
 This is a simple header-only C/C++ logger for my projects.
 
+## Features
+
+- Minimal Standard output logging
+- Minimal File logging
+
 ## Technologies Used
 
 - C11
