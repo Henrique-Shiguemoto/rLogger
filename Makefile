@@ -1,16 +1,16 @@
-COMPILER=clang++
-COMPILER_FLAGS=-Wall -Wextra -pedantic -std=c++11 -Wno-unused-parameter
-SRC=main.cpp
+COMPILER=gcc
+COMPILER_FLAGS=-Wall -Wextra -pedantic -std=c11 -Wno-unused-parameter
+SRC=main.c rlogger.c
 BIN=main.exe
 DEBUGGER=gdb
 
 all:
 	$(COMPILER) $(SRC) -o $(BIN) $(COMPILER_FLAGS)
 
-run: all
+run: 
 	$(BIN)
 
-debug: all
+debug: 
 	$(DEBUGGER) $(BIN)
 
 clean:

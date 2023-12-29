@@ -1,11 +1,12 @@
 # rLogger.h
 
-This is a simple header-only C/C++ logger for my projects.
+This is a simple C/C++ logger for my projects.
 
 ## Features
 
 - Minimal Standard output logging
 - Minimal File logging
+- Functional in C and C++
 
 ## Technologies Used
 
@@ -27,3 +28,5 @@ The output log file is called "rLog.log" by default. You can call it something e
 <code>
 	#define LOG_FILE_NAME "choose your custom name"
 </code>
+
+Obs: The clang++ compiler warns of the usage of a .c file (<code>rlogger.c</code>) as input for the compiler (it says it is deprecated), since it is a C++ compiler. In my tests, nothing out of the ordinary seems to be happening (tests were made with gcc, clang, g++ and clang++, clang++ seems to be the only one complaining), but beware, maybe clang++ one day will start not allowing .c files as input, who knows.

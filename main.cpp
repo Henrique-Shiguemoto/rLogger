@@ -1,7 +1,4 @@
-#define RLOGGER_IMPLEMENTATION
-#include "rLogger.h"
-
-// this is an example code of how to use the library.
+#include "rlogger.h"
 
 int main(void){
 	rLogger_init(RLOG_FILE_MODE);
